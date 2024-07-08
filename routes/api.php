@@ -6,6 +6,8 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\PlacesController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\HotelController;
+use App\Http\Controllers\GuiderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +23,9 @@ use App\Http\Controllers\SupportController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/users',[UsersController::class,'index']);
+
+// Route::get('/users',[UsersController::class,'index']);
+
 Route::post('/register',[UsersController::class,'register']);
 Route::post('/login',[UsersController::class,'login']);
 Route::post('/sendOTP',[UsersController::class,'sendOTP']);
@@ -29,8 +33,14 @@ Route::post('/verifyOTP',[UsersController::class,'verifyOTP']);
 Route::post('/setPassword',[UsersController::class,'setPassword']);
 Route::post('/deleteUser',[UsersController::class,'deleteUser']);
 Route::get('/showAllPlaces',[PlacesController::class,'showAllPlaces']);
+Route::get('getPlacesVideo/',[PlacesController::class,'getPlacesVideo']);
 Route::get('/showAllNotifications',[NotificationController::class,'showAllNotifications']);
 Route::Post('/addSupportMessage',[SupportController::class,'addSupportMessage']);
 Route::Post('/updateProfile',[UsersController::class,'updateProfile']);
 Route::Post('/sendNotificationToAll',[NotificationController::class,'sendNotificationToAll']);
 Route::Post('/updateNotificationToken',[NotificationController::class,'updateNotificationToken']);
+Route::get('/showAllHotels',[HotelController::class,'showAllHotels']);
+Route::get('/getHotelReviews',[HotelController::class,'getHotelReviews']);
+Route::get('/findGuiderByCityid',[GuiderController::class,'findGuiderByCityid']);
+Route::get('/getGuiderReviews',[GuiderController::class,'getGuiderReviews']);
+
