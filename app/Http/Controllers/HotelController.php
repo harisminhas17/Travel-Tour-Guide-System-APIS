@@ -7,15 +7,25 @@ use App\Models\Hotels;
 use App\Models\HotelsImages;
 use Illuminate\Support\Facades\Storage;
 use App\Models\HotelsReviews;
+use App\Models\Transportation;
 
 class HotelController extends Controller
 {
-    public function showAllHotels(Request $request){
-        $hotels = Hotels::all();
-        $hotels_return=[];
+    
+    public function getHotelbyCityid(Request $request){
+
+        $city_id= $request->city_id;
+      
+
+        $hotels = Hotels::where("city_id", $city_id)->get();
+        $hotel_return=[];
+
         foreach ($hotels as $p){
+       
+
             $images = HotelsImages::where("hotel_id",$p['id'])->get();
             $images_arr=[];
+
             foreach ($images as $i) {
                
                 // Assuming 'images' is a directory in 'storage/app/public'
@@ -30,14 +40,15 @@ class HotelController extends Controller
             }
             
             $p['images']=$images;
-            $hotels_return[]=$p;
+            $hotel_return[]=$p;
         }
         $res['error']=FALSE;
-        $res['msg']="Showing All Hotels";
-        $res['records']=$hotels_return;
+        $res['msg']="Showing All Hotels By Cities Only";
+        $res['records']=$hotel_return;
         return json_encode($res);
 
     }
+
     public function getHotelReviews(Request $request){
 
         $hotel_id= $request->hotel_id;
@@ -52,5 +63,19 @@ class HotelController extends Controller
         $res['records']=$guider_return;
         return json_encode($res);
 
+    }
+    public function findTransportationbyCityid(Request $request){
+
+        $city_id= $request->city_id;
+
+        $transport = Transportation::where("city_id", $city_id)->get();
+        $transport_return=[];
+        foreach ($transport as $p){
+            $transport_return[]=$p;
+        }
+        $res['error']=FALSE;
+        $res['msg']="Showing All Transport's";
+        $res['records']=$transport_return;
+        return json_encode($res);
     }
 }

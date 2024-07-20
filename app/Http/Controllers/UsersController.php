@@ -100,7 +100,7 @@ class UsersController extends Controller
          $users['name'] = $request->name;
          $users['password'] = md5($request->password);
          $users['image'] = $request->image;
-         $users['location'] = $request->location;
+         $users['address'] = $request->address;
  
          try {
              //update data into database
