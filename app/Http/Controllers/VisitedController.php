@@ -21,28 +21,30 @@ class VisitedController extends Controller
         $action = $request->input('action');
 
         if ($action == 1) {
-            // Insert favorite item
-            $favorite = Favorite::firstOrCreate([
+
+            // Insert visited item
+
+            $visited = Visited::firstOrCreate([
                 'user_id' => $userId,
                 'item_id' => $itemId,
             ], [
-                'type' => 'favorite',
+                'type' => 'visited',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
-            return response()->json(['message' => 'Item marked as favorite', 'favorite' => $favorite], 200);
+            return response()->json(['message' => 'Item marked as visited', 'visited' => $visited], 200);
         } else if ($action == 0) {
-            // Delete favorite item
-            $favorite = Favorite::where('user_id', $userId)
-                                ->where('item_id', $itemId)
-                                ->first();
 
-            if ($favorite) {
-                $favorite->delete();
-                return response()->json(['message' => 'Item unmarked as favorite'], 200);
+            // Delete visited item
+
+            $visited = Visited::where('user_id', $userId)->where('item_id', $itemId)->first();
+
+            if ($visited) {
+                $visited->delete();
+                return response()->json(['message' => 'Item unmarked as visited'], 200);
             } else {
-                return response()->json(['message' => 'Favorite item not found'], 404);
+                return response()->json(['message' => 'Visited item not found'], 404);
             }
         }
 
