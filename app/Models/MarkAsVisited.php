@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class MarkAsVisited extends Model
 {
+    protected $fillable =[
+        'user_id'
+    ];
+    
     use HasFactory;
 }

@@ -9,44 +9,45 @@ use App\Models\MarkAsFavorite;
 
 class MarkController extends Controller
 {
-    public function markAsFavorite(Request $request){
-        $request->validate([
-            'user_id' => 'required|integer',
-            'item_id' => 'required|integer',
-            'action' => 'required|integer|in:0,1',
-        ]);
+    use App\Models\MarkAsFavorite;
+use Illuminate\Http\Request;
 
-        $userId = $request->input('user_id');
-        $itemId = $request->input('item_id');
-        $action = $request->input('action');
+public function markAsFavorite(Request $request)
+{
+    $userId = $request->input('user_id');
+    $itemId = $request->input('item_id');
+    $type = $request->input('type');
+    
+    try {
+        $favorite = MarkAsFavorite::where('user_id', $userId)
+            ->where('item_id', $itemId)
+            ->first();
 
-        if ($action == 1) {
+        if (!$favorite) {
             // Insert favorite item
-            $favorite = Favorite::firstOrCreate([
+            $favorite = MarkAsFavorite::create([
                 'user_id' => $userId,
                 'item_id' => $itemId,
-            ], [
-                'type' => 'favorite',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'type' => $type
             ]);
 
             return response()->json(['message' => 'Item marked as favorite', 'favorite' => $favorite], 200);
-        } else if ($action == 0) {
+        } else {
             // Delete favorite item
-            $favorite = Favorite::where('user_id', $userId)
-                                ->where('item_id', $itemId)
-                                ->first();
-
-            if ($favorite) {
-                $favorite->delete();
-                return response()->json(['message' => 'Item unmarked as favorite'], 200);
-            } else {
-                return response()->json(['message' => 'Favorite item not found'], 404);
-            }
+            $favorite->delete();
+            return response()->json(['message' => 'Item unmarked as favorite'], 200);
         }
+    } catch (\Exception $e) {
+        // If an exception occurs, attempt to delete the existing favorite record
+        MarkAsFavorite::where('user_id', $userId)
+            ->where('item_id', $itemId)
+            ->delete();
 
-        return response()->json(['message' => 'Invalid action'], 400);
+        return response()->json(['message' => 'Error marking/unmarking item as favorite, record deleted', 'error' => $e->getMessage()], 400);
+    }
 }
+
+    
+    
 }
 

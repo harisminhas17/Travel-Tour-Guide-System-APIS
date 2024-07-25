@@ -88,6 +88,8 @@ class NotificationController extends Controller
         echo " Notification sent to " . sizeof($users) . " users";
     }
 
+   
+
     private function firebaseNotification($fields) {
         $url = 'https://fcm.googleapis.com/fcm/send';
         $headers = array(
@@ -110,5 +112,45 @@ class NotificationController extends Controller
 
 //        var_dump($result);
         return $result;
+    }
+
+    public function sendConfirmNotification(Request $request) {
+        $message="Your payment has been received";
+        $user_id = $request -> $user_id;
+
+        $count = $this->count + 1;
+        if ($count != 1) {
+            return;
+        }
+
+        $users=DB::table('users')->where('id', $user_id)->first();
+
+        foreach ($users as $user) {
+            $token=$user->token;
+
+            //save message into db
+
+            $notification = new Notifications();
+            $notification->user_id=$user->id;
+            $notification->text=$message;
+            $notification->save();
+
+            $fields = array(
+                'to' => trim($token),
+                "priority" => "high",
+                "notification" => array(
+                    'body' => $message,
+                    'title' => "Travel Tour & Guide System",
+                    "priority" => "high"
+                ),
+                'data' => array(
+                    'body' => $message,
+                    'title' => "Travel Tour & Guide System",
+                    "priority" => "high"
+                )
+            );
+            $this->firebaseNotification($fields);
+        }
+        echo " Notification sent to " . sizeof($users) . " users";
     }
 }

@@ -42,6 +42,8 @@ Route::get('getPlacesVideo/',[PlacesController::class,'getPlacesVideo']);
 Route::get('/showAllNotifications',[NotificationController::class,'showAllNotifications']);
 Route::Post('/sendNotificationToAll',[NotificationController::class,'sendNotificationToAll']);
 Route::Post('/updateNotificationToken',[NotificationController::class,'updateNotificationToken']);
+Route::Post('/sendConfirmNotification',[NotificationController::class,'sendConfirmNotification']);
+
 
 Route::Post('/addSupportMessage',[SupportController::class,'addSupportMessage']);
 

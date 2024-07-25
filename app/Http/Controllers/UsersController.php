@@ -14,53 +14,43 @@ class UsersController extends Controller
         return response()->json($users);
     }
 
-    public function register(Request $request){
-
-       //declaring new variable $users
-        $users = new Users;
-        
-        //taking data from request and save into $users
-        $users->name = $request->name;
-        $users->email = $request->email;
-        $users->password = md5($request->password);
-        $users->image = $request->image;
-        $users->location = $request->location;
-
-        
-        //getting data from database against this email
-        $response= Users::where('email',$users->email)->first();
-        
-        //if user is new and has no data in the database then it will be null otherwise not null
-        if($response!=null){
-            
-            //check stored user is verify or not if verified then return already exists otherwise delete data
-
-            if($response['is_verify']==1){
-                $res['error']=true;
-                $res['msg']="this email is already exists";
-                return json_encode($res);
-            }else{
-                DB::table('users')->where('email',$users->email)->delete();
+    public function register(Request $request) {
+        // Validate and sanitize request data
+        $data = $request->only(['name', 'email', 'password', 'image']);
+        $data['password'] = md5($data['password']); // Use md5 for password hashing
+    
+        // Check if the email already exists in the database
+        $response = Users::where('email', $data['email'])->first();
+    
+        if ($response != null) {
+            // Check if the user is verified
+            if ($response->is_verify == 1) {
+                $res['error'] = true;
+                $res['msg'] = "This email already exists";
+                return response()->json($res);
+            } else {
+                // Delete the unverified user with the same email
+                Users::where('email', $data['email'])->delete();
             }
         }
-       
+    
         try {
-           
-            //saving data into database
-
-            $users->save();
-        }
-        catch(Exception $exception){
-            $errorCode = $exception->errorInfo[1];
-            if($errorCode == 1062){
-                $res['error']=true;
-                $res['msg']="this email is already exists";
-                return json_encode($res);
+            // Create new user data in the database
+            Users::create($data);
+            $res['error'] = false;
+            $res['msg'] = "Successfully Registered";
+        } catch (\Exception $exception) {
+            // Handle duplicate email error
+            if ($exception->getCode() == '23000') {
+                $res['error'] = true;
+                $res['msg'] = "This email already exists";
+            } else {
+                $res['error'] = true;
+                $res['msg'] = "An error occurred " .$exception;
             }
         }
-        $res['error']=false;
-        $res['msg']="Successfully Registered";
-        return json_encode($res);
+    
+        return response()->json($res);
     }
 
     public function login(Request $request){
@@ -91,6 +81,7 @@ class UsersController extends Controller
         }
         return json_encode($res);
     }
+    
     public function updateProfile(Request $request){
 
         //declaring new variable $users
@@ -132,7 +123,7 @@ class UsersController extends Controller
 
             Mail::send('otpmail', $data, function($message) use ($user){
                 $message->to($user['to'])->subject('OTP for TTGS');
-                $message->from('traveltourandguidesystem@outlook.com','Travel Tour');
+                $message->from('traveltourandguidesystem@outlook.com','Travel Tour & Guide System');
             });
     
             $res['error']=false;
