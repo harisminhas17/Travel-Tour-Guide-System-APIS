@@ -49,21 +49,6 @@ class HotelController extends Controller
 
     }
 
-    public function getHotelReviews(Request $request){
-
-        $hotel_id= $request->hotel_id;
-
-        $guider = HotelsReviews::where("hotel_id", $hotel_id)->get();
-        $guider_return=[];
-        foreach ($guider as $p){
-            $guider_return[]=$p;
-        }
-        $res['error']=FALSE;
-        $res['msg']="Showing All Hotel Reviews";
-        $res['records']=$guider_return;
-        return json_encode($res);
-
-    }
     public function findTransportationbyCityid(Request $request){
 
         $city_id= $request->city_id;
@@ -78,4 +63,31 @@ class HotelController extends Controller
         $res['records']=$transport_return;
         return json_encode($res);
     }
+
+    public function sendUserHotelReview(Request $request){
+
+        $hotels_reviews=new HotelsReviews;  //model name
+        
+        //taking data from request and save into $hotels_reviews
+        
+        $hotels_reviews->user_id = $request->user_id;
+        $hotels_reviews->review = $request->review;
+        $hotels_reviews->rating = $request->rating;
+        $hotels_reviews->item_id = $request->item_id;
+        $hotels_reviews->item_type = $request->item_type;
+
+    try {
+
+        //saving data into database
+
+        $hotels_reviews->save();
+        $res['error']=false;
+        $res['msg']="Review Message Has Been Successfull";
+        return json_encode($res);
+   }catch(Exception $ex){
+       $res['error']=TRUE;
+       $res['msg']="Error While Saving Message";
+       return json_encode($res);
+   }
+}
 }

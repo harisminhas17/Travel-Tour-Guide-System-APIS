@@ -10,7 +10,8 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\GuiderController;
 use App\Http\Controllers\MarkController;
 use App\Http\Controllers\VisitedController;
-
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\BookingController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,6 +35,8 @@ Route::post('/sendOTP',[UsersController::class,'sendOTP']);
 Route::post('/verifyOTP',[UsersController::class,'verifyOTP']);
 Route::post('/setPassword',[UsersController::class,'setPassword']);
 Route::post('/deleteUser',[UsersController::class,'deleteUser']);
+Route::Post('/updateProfile',[UsersController::class,'updateProfile']);
+Route::Post('/appReview',[UsersController::class,'appReview']);
 
 Route::get('/showAllPlaces',[PlacesController::class,'showAllPlaces']);
 Route::get('/searchPlaces',[PlacesController::class,'searchPlaces']);
@@ -47,10 +50,10 @@ Route::Post('/sendConfirmNotification',[NotificationController::class,'sendConfi
 
 Route::Post('/addSupportMessage',[SupportController::class,'addSupportMessage']);
 
-Route::Post('/updateProfile',[UsersController::class,'updateProfile']);
+
 
 Route::get('/getHotelbyCityid',[HotelController::class,'getHotelbyCityid']);
-Route::get('/getHotelReviews',[HotelController::class,'getHotelReviews']);
+Route::Post('/sendUserHotelReview',[HotelController::class,'sendUserHotelReview']);
 Route::get('/findTransportationbyCityid',[HotelController::class,'findTransportationbyCityid']);
 
 Route::get('/findGuiderByCityid',[GuiderController::class,'findGuiderByCityid']);
@@ -59,5 +62,8 @@ Route::get('/getGuiderReviews',[GuiderController::class,'getGuiderReviews']);
 Route::Post('/markAsFavorite',[MarkController::class,'markAsFavorite']);
 Route::Post('/markAsVistied',[VisitedController::class,'markAsVistied']);
 
+Route::Post('/uploadPhotos',[AlbumController::class,'uploadPhotos']);
+
+Route::Post('bookingTour',[BookingController::class,'bookingTour']);
 
 

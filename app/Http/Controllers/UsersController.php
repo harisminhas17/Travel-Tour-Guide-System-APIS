@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Users;
+use App\Models\UserAppReview;
 use Illuminate\Http\Request;
 use Exception;
 use Mail;
@@ -15,6 +16,7 @@ class UsersController extends Controller
     }
 
     public function register(Request $request) {
+        
         // Validate and sanitize request data
         $data = $request->only(['name', 'email', 'password', 'image']);
         $data['password'] = md5($data['password']); // Use md5 for password hashing
@@ -196,5 +198,30 @@ class UsersController extends Controller
             }
         }
         return response()->json($res);
-    }    
+    }   
+    
+    public function appReview(Request $request){
+
+        $app_review=new UserAppReview;  //model name
+        
+        //taking data from request and save into $app_review
+
+        $app_review->user_id = $request->user_id;
+        $app_review->app_review = $request->app_review;
+        $app_review->rating = $request->rating;
+
+    try {
+
+        //saving data into database
+
+        $app_review->save();
+        $res['error']=false;
+        $res['msg']="Review Message Has Been Successfull";
+        return json_encode($res);
+   }catch(Exception $ex){
+       $res['error']=TRUE;
+       $res['msg']="Error While Saving Message";
+       return json_encode($res);
+   }
+}
 }

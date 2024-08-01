@@ -17,6 +17,7 @@ class SupportController extends Controller{
         $support->message = $request->message;
         $support->user_id = $request->user_id;
         $support->image_file = $request->image_file;
+     
 
         $res['error']=false;
 
