@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Places;
 use App\Models\PlacesImages;
+use App\Models\PlacesReviews;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -70,6 +71,33 @@ class PlacesController extends Controller
         return json_encode($res);
 
     }
+
+    public function sendUserPlaceReviews(Request $request){
+
+        $place_reviews=new PlacesReviews; //model name
+        
+        //taking data from request and save into $place_reviews
+        
+        $place_reviews->user_id = $request->user_id;
+        $place_reviews->review = $request->review;
+        $place_reviews->rating = $request->rating;
+        $place_reviews->item_id = $request->item_id;
+        $place_reviews->item_type = $request->item_type;
+
+    try {
+
+        //saving data into database
+
+        $place_reviews->save();
+        $res['error']=false;
+        $res['msg']="Place Review Message Has Been Successfull";
+        return json_encode($res);
+   }catch(Exception $ex){
+       $res['error']=TRUE;
+       $res['msg']="Error While Saving Message";
+       return json_encode($res);
+   }
+}
 
     public function getPlacesVideo(Request $request){
 

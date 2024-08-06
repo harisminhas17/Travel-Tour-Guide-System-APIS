@@ -25,9 +25,7 @@ class BookingController extends Controller
         $booking->bed_type = $request->bed_type;
         $booking->no_of_guests = $request->no_of_guests;
         $booking->special_request = $request->special_request;
-
-    
-
+        
         $booking->user_id = $request->user_id;
  try {
              //saving data into database

@@ -40,6 +40,7 @@ Route::Post('/appReview',[UsersController::class,'appReview']);
 
 Route::get('/showAllPlaces',[PlacesController::class,'showAllPlaces']);
 Route::get('/searchPlaces',[PlacesController::class,'searchPlaces']);
+Route::Post('/sendUserPlaceReviews',[PlacesController::class,'sendUserPlaceReviews']);
 Route::get('getPlacesVideo/',[PlacesController::class,'getPlacesVideo']);
 
 Route::get('/showAllNotifications',[NotificationController::class,'showAllNotifications']);

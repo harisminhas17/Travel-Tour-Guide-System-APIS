@@ -92,9 +92,14 @@ class UsersController extends Controller
          //taking data from request and save into $users
          $users['name'] = $request->name;
          $users['password'] = md5($request->password);
-         $users['image'] = $request->image;
          $users['address'] = $request->address;
- 
+
+         if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+            $users['image'] = 'images/' . $imageName;
+        }
          try {
              //update data into database
              Users::where('email', $request->email)->update($users);
